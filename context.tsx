@@ -6,10 +6,10 @@ interface GlobalContext {
   url: string;
 }
 
-const AppContext = React.createContext<GlobalContext>({ url: "http://192.168.1.121:9000" });
+const AppContext = React.createContext<GlobalContext>({ url: "https://write-server.onrender.com" });
 
 const AppProvider = ({ children }: { children: any }) => {
-  const url = "http://192.168.1.121:9000";
+  const url = "https://write-server.onrender.com";
 
   return <AppContext.Provider value={{ url }}>{children}</AppContext.Provider>;
 };
