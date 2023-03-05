@@ -1,8 +1,10 @@
 "use client";
 import LinkComp from "@/src/components/input/Link";
 import { useGlobalContext } from "context";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { BsArrowLeft } from "react-icons/bs";
 
 interface NoteType {
   noteId: number;
@@ -28,7 +30,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
   const { noteKey } = params;
   const router = useRouter();
 
-  const closePath = noteData?.path === "0" ? "write" : `/write/f/${noteData?.path}`;
+  const returnPath = noteData?.path === "0" ? "write" : `/write/f/${noteData?.path}`;
 
   // copy pasted
   const decodeEntities = (s: string): any => {
@@ -112,11 +114,18 @@ export default function page({ params }: { params: { noteKey: string } }) {
   return (
     <div className="min-h-screen p-5 text-wht cstm-flex-col ">
       <div
-        className="absolute h-[80%] max-h-[80%] w-10/12 rounded-md cstm-flex-col shadow-md shadow-blk1
+        className="absolute h-[80%] max-h-[80%] w-10/12 rounded-md cstm-flex-col shadow-md shadow-blk1 gap-2
                   t:w-8/12
                   l-s:w-6/12"
       >
-        <div className="w-full mb-auto border-[1px] h-full border-wht rounded-t-md p-5 pb-20">
+        <Link
+          href={returnPath}
+          className="p-2 mr-auto hover:bg-gry1 hover:text-blk2 rounded-full transition-all"
+        >
+          <BsArrowLeft />
+        </Link>
+
+        <div className="w-full mb-auto border-[1px] h-full border-wht rounded-md p-5 overflow-hidden">
           <textarea
             onChange={(e) => onChange(e)}
             placeholder="Title"
@@ -136,11 +145,6 @@ export default function page({ params }: { params: { noteKey: string } }) {
             value={decodeEntities(noteData.content)}
           />
         </div>
-        <LinkComp
-          label="Close"
-          style="hover:underline relative w-full underline-offset-2 p-2 bg-wht rounded-t-none text-blk2"
-          link={closePath}
-        />
       </div>
     </div>
   );

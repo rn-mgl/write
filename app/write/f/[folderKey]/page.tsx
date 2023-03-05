@@ -114,7 +114,10 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
           />
         </div>
         <div className="cstm-flex-row justify-between w-full">
-          <Link href={prevPath} className="cstm-flex-row font-noto font-light text-wht">
+          <Link
+            href={prevPath}
+            className="cstm-flex-row font-noto font-light text-wht p-2 hover:text-blk2 hover:bg-gry1 transition-all rounded-full"
+          >
             <BsArrowLeft />
           </Link>
 
