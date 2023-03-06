@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" className={`${noto.variable} ${work.variable}`}>
         <head />
 
-        <body className="w-full cstm-grdbg-blk-1-2">
+        <body className="w-full h-screen cstm-grdbg-blk-1-2 cstm-scrollbar">
           <Logo />
           {children}
         </body>

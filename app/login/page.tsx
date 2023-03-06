@@ -48,7 +48,7 @@ export default function Login() {
   };
 
   return (
-    <div className="cstm-flex-col min-h-screen p-5 gap-2">
+    <div className="cstm-flex-col p-5 gap-2">
       <p className="font-noto font-extrabold text-3xl mb-3 cstm-grdtxt-wht-1-2">Log In</p>
       <LoginForm onChange={handleLoginData} onSubmit={submitLogin} value={loginData} />
     </div>

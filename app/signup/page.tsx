@@ -51,7 +51,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="cstm-flex-col min-h-screen p-5 gap-2">
+    <div className="cstm-flex-col p-5 gap-2">
       <p className="font-noto font-extrabold text-3xl mb-3 cstm-grdtxt-wht-1-2">Sign Up</p>
       <SignupForm onChange={handleSignupData} onSubmit={submitSignup} value={signupData} />
     </div>

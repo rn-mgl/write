@@ -63,13 +63,13 @@ export default function MainPage() {
   }, [getFiles, router]);
 
   return (
-    <div className="min-h-screen p-5 pt-20 cstm-flex-col justify-start ">
+    <div className="h-auto p-5 cstm-flex-col justify-start ">
       {canAddNote ? <AddNoteForm getFiles={getFiles} closeForm={handleAddNote} path="0" /> : null}
       {canAddFolder ? (
         <AddFolderForm getFiles={getFiles} closeForm={handleAddFolder} path="0" />
       ) : null}
       <div className="w-full cstm-flex-col gap-3 t:w-8/12 ">
-        <div className="cstm-flex-row gap-3 w-full ml-auto t:w-6/12 l-l:w-5/12">
+        <div className="cstm-flex-row gap-3 w-full ml-auto t:w-6/12 l-s:w-4/12 l-l:w-3/12">
           <ButtonComp
             label={`+ Note`}
             style="bg-wht border-2 border-wht w-full"

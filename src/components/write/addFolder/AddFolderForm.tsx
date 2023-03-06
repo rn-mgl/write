@@ -60,7 +60,7 @@ const AddFolderForm: React.FC<FormProps> = (props) => {
   };
 
   return (
-    <div className="left-0 top-0 cstm-flex-col fixed w-full h-full backdrop-blur-sm p-5">
+    <div className="left-0 top-0 cstm-flex-col fixed w-full h-full backdrop-blur-sm p-5 z-10">
       <div className="cstm-flex-col p-3 rounded-md bg-blk2 w-full h-fit text-wht shadow-md shadow-blk1 t:w-6/12 l-s:w-4/12">
         <BsArrowLeft onClick={props.closeForm} className="mr-auto mb-auto cursor-pointer" />
         <form className="w-full mb-auto cstm-flex-col gap-2" onSubmit={(e) => submitForm(e)}>

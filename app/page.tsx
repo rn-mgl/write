@@ -5,7 +5,7 @@ import LinkComp from "@/src/components/input/Link";
 export default function Landing() {
   return (
     <main
-      className="p-5 cstm-flex-col justify-start gap-5 max-h-screen h-screen overflow-hidden text-wht
+      className="p-5 cstm-flex-col justify-start gap-5 overflow-hidden text-wht
                 t:cstm-flex-row
                 l-s:p-10"
     >
@@ -27,7 +27,7 @@ export default function Landing() {
           Write is a secure and private note-taking site to release all your{" "}
           <br className="hidden l-l:block" /> thoughts and free up your mind.
         </p>
-        <div className="cstm-flex-col w-full gap-2 m-l:w-10/12 t:w-full l-s:cstm-flex-row text-center l-l:w-8/12">
+        <div className="cstm-flex-col w-full gap-2 m-l:w-10/12 t:w-8/12 l-s:cstm-flex-row text-center l-l:w-6/12">
           <LinkComp label="Sign Up" link="signup" style="border-2 border-wht w-full" />
           <LinkComp
             label="Log In"
@@ -37,7 +37,7 @@ export default function Landing() {
         </div>
       </div>
       <div className="w-full h-2/6 cstm-flex-col l-s:w-5/12">
-        <Image src={landing} alt="landing" className="w-full m-l:w-10/12 l-l:w-8/12" />
+        <Image priority src={landing} alt="landing" className="w-full m-l:w-10/12 l-l:w-8/12" />
       </div>
     </main>
   );

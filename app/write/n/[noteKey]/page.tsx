@@ -112,9 +112,9 @@ export default function page({ params }: { params: { noteKey: string } }) {
   }, [noteData]);
 
   return (
-    <div className="min-h-screen p-5 text-wht cstm-flex-col ">
+    <div className="p-5 text-wht cstm-flex-col ">
       <div
-        className="absolute h-[80%] max-h-[80%] w-10/12 rounded-md cstm-flex-col shadow-md shadow-blk1 gap-2
+        className="absolute top-2/4 -translate-y-2/4 h-[80%] max-h-[80%] w-10/12 rounded-md cstm-flex-col shadow-md shadow-blk1 gap-2
                   t:w-8/12
                   l-s:w-6/12"
       >
@@ -130,7 +130,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
             onChange={(e) => onChange(e)}
             placeholder="Title"
             name="name"
-            className="bg-transparent w-full resize-none font-noto font-semibold focus:outline-none focus:border-none
+            className="bg-transparent w-full resize-none pt-2 px-2 font-noto font-semibold focus:outline-none focus:border-none
                       cstm-scrollbar
                         text-wht "
             value={noteData.name}
@@ -139,7 +139,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
             onChange={(e) => onChange(e)}
             placeholder="Body"
             name="content"
-            className="bg-transparent font-light w-full h-full resize-none focus:outline-none focus:border-none tracking-wide scroll-m-0 scroll-p-0
+            className="bg-transparent font-light px-2 pb-2 w-full h-[90%] resize-none focus:outline-none focus:border-none tracking-wide
                       cstm-scrollbar
                         text-wht"
             value={decodeEntities(noteData.content)}
