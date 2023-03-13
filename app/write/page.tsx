@@ -101,9 +101,9 @@ export default function MainPage() {
         >
           {files.map((file: FileBlockProps) => {
             return file.type === "note" ? (
-              <NoteBlock key={file.fileKey} note={file} selectFile={selectFile} />
+              <NoteBlock key={file.fileKey} note={file} />
             ) : (
-              <FolderBlock key={file.fileKey} folder={file} selectFile={selectFile} />
+              <FolderBlock key={file.fileKey} folder={file} />
             );
           })}
         </div>

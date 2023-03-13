@@ -15,7 +15,7 @@ interface FolderType {
 
 interface FolderBlockProps {
   folder: FolderType;
-  selectFile: (type: string, key: string) => void;
+  // selectFile: (type: string, key: string) => void;
 }
 
 const FolderBlock: React.FC<FolderBlockProps> = (props) => {
@@ -24,7 +24,7 @@ const FolderBlock: React.FC<FolderBlockProps> = (props) => {
   return (
     <div className="relative group w-full">
       <BsFillCheckCircleFill
-        onClick={() => props.selectFile("folder", props.folder.fileKey)}
+        // onClick={() => props.selectFile("folder", props.folder.fileKey)}
         className="absolute hidden -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer"
       />
       <Link

@@ -15,7 +15,6 @@ interface NoteType {
 
 interface NoteBlockProps {
   note: NoteType;
-  selectFile: (type: string, key: string) => void;
 }
 
 const NoteBlock: React.FC<NoteBlockProps> = (props) => {
@@ -26,7 +25,7 @@ const NoteBlock: React.FC<NoteBlockProps> = (props) => {
     <div className="relative group w-full">
       <BsFillCheckCircleFill
         className="absolute hidden -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer"
-        onClick={() => props.selectFile("note", props.note.fileKey)}
+        // onClick={() => props.selectFile("note", props.note.fileKey)}
       />
       <Link
         href={`/write/n/${props.note.fileKey}`}
