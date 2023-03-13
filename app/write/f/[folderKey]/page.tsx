@@ -3,14 +3,18 @@ import React from "react";
 import { useGlobalContext } from "context";
 import { useRouter } from "next/navigation";
 
+import FolderColor from "@/src/components/write/folder/FolderColor";
 import NoteBlock from "@/src/components/write/global/NoteBlock";
 import ButtonComp from "@/src/components/input/Button";
 import AddNoteForm from "@/src/components/write/addNote/AddNoteForm";
 import AddFolderForm from "@/src/components/write/addFolder/AddFolderForm";
 import FolderBlock from "@/src/components/write/global/FolderBlock";
 import { BsArrowLeft } from "react-icons/bs";
-import LinkComp from "@/src/components/input/Link";
+
 import Link from "next/link";
+import FolderActions from "@/src/components/write/folder/FolderActions";
+import TextColor from "@/src/components/write/folder/TextColor";
+import DeleteFolder from "@/src/components/write/folder/DeleteFolder";
 
 interface FileBlockProps {
   fileId: number;
@@ -19,7 +23,8 @@ interface FileBlockProps {
   name: string;
   path: number;
   content: string;
-  color: string;
+  bgColor: string;
+  textColor: string;
   type: "note" | "folder";
   dateCreated: Date;
 }
@@ -28,7 +33,8 @@ interface FolderData {
   folderId: number;
   folderKey: string;
   owner: number;
-  color: string;
+  folderColor: string;
+  textColor: string;
   name: string;
   path: string;
   dateCreated: Date;
@@ -40,13 +46,17 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
     folderId: -1,
     folderKey: "",
     owner: -1,
-    color: "",
+    folderColor: "",
+    textColor: "",
     name: "",
     path: "",
     dateCreated: new Date(),
   });
   const [canAddNote, setCanAddNote] = React.useState(false);
   const [canAddFolder, setCanAddFolder] = React.useState(false);
+  const [canDeleteFolder, setCanDeleteFolder] = React.useState(false);
+  const [canChangeFillColor, setChangeFillColor] = React.useState(false);
+  const [canChangeTextColor, setChangeTextColor] = React.useState(false);
 
   const { url } = useGlobalContext();
   const { folderKey } = params;
@@ -56,19 +66,21 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
 
   const getFiles = React.useCallback(
     async (token: string, url: string) => {
-      try {
-        fetch(`${url}/folder/${folderKey}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json", Authorization: token },
+      fetch(`${url}/folder/${folderKey}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", Authorization: token },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error(response.statusText);
+          }
         })
-          .then((response) => response.json())
-          .then((result) => {
-            setFiles(result.files);
-            setFolderData(result.folder);
-          });
-      } catch (error) {
-        console.log(error);
-      }
+        .then((result) => {
+          setFiles(result.files);
+          setFolderData(result.folder);
+        });
     },
     [setFiles, fetch]
   );
@@ -81,6 +93,18 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
     setCanAddFolder((prev) => !prev);
   };
 
+  const toggleDeleteFolder = () => {
+    setCanDeleteFolder((prev) => !prev);
+  };
+
+  const toggleChangeFillColor = () => {
+    setChangeFillColor((prev) => !prev);
+  };
+
+  const toggleChangeTextColor = () => {
+    setChangeTextColor((prev) => !prev);
+  };
+
   React.useEffect(() => {
     const token = localStorage.getItem("write_token");
     if (token) {
@@ -91,14 +115,40 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
   }, [getFiles, router]);
 
   return (
-    <div className="p-5 cstm-flex-col justify-start gap-2 ">
+    <div
+      className="cstm-grdbg-blk-1-2 min-h-screen h-auto p-5 pt-28 cstm-flex-col justify-start gap-2 border-2"
+      style={{ borderColor: folderData.folderColor }}
+    >
       {canAddNote ? (
         <AddNoteForm getFiles={getFiles} closeForm={handleAddNote} path={folderKey} />
       ) : null}
       {canAddFolder ? (
         <AddFolderForm closeForm={handleAddFolder} getFiles={getFiles} path={folderKey} />
       ) : null}
-      <div className="w-full cstm-flex-col gap-5 t:w-8/12 ">
+      {canChangeFillColor ? (
+        <FolderColor
+          toggleChangeFillColor={toggleChangeFillColor}
+          folderKey={folderKey}
+          folderColor={folderData.folderColor}
+          getFiles={getFiles}
+        />
+      ) : null}
+      {canChangeTextColor ? (
+        <TextColor
+          toggleChangeTextColor={toggleChangeTextColor}
+          getFiles={getFiles}
+          folderKey={folderKey}
+          textColor={folderData.textColor}
+        />
+      ) : null}
+      {canDeleteFolder ? (
+        <DeleteFolder
+          toggleDeleteFolder={toggleDeleteFolder}
+          folderKey={folderKey}
+          prevPath={prevPath}
+        />
+      ) : null}
+      <div className="w-full cstm-flex-col gap-5 t:w-7/12 ">
         <div className="cstm-flex-row gap-3 w-full ">
           <Link
             href={prevPath}
@@ -121,8 +171,19 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
             />
           </div>
         </div>
-
-        <p className="font-noto font-extrabold text-wht text-xl">{folderData?.name}</p>
+        <div className="cstm-flex-row w-full gap-2">
+          <p
+            className="font-noto font-extrabold text-wht text-xl mr-auto"
+            style={{ color: folderData.textColor }}
+          >
+            {folderData?.name}
+          </p>
+          <FolderActions
+            toggleChangeFillColor={toggleChangeFillColor}
+            toggleChangeTextColor={toggleChangeTextColor}
+            toggleDeleteFolder={toggleDeleteFolder}
+          />
+        </div>
 
         <div
           className="w-full cstm-flex-col gap-3 

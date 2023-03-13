@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { SetStateAction } from "react";
 import { useGlobalContext } from "context";
 import { useRouter } from "next/navigation";
 
@@ -16,7 +16,8 @@ interface FileBlockProps {
   name: string;
   path: number;
   content: string;
-  color: string;
+  bgColor: string;
+  textColor: string;
   type: "note" | "folder";
   dateCreated: Date;
 }
@@ -25,22 +26,25 @@ export default function MainPage() {
   const [files, setFiles] = React.useState([]);
   const [canAddNote, setCanAddNote] = React.useState(false);
   const [canAddFolder, setCanAddFolder] = React.useState(false);
+  const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
 
   const { url } = useGlobalContext();
   const router = useRouter();
 
   const getFiles = React.useCallback(
     async (token: string, url: string) => {
-      try {
-        fetch(`${url}/all`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json", Authorization: token },
+      fetch(`${url}/all`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", Authorization: token },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error(response.statusText);
+          }
         })
-          .then((response) => response.json())
-          .then((result) => setFiles(result));
-      } catch (error) {
-        console.log(error);
-      }
+        .then((result) => setFiles(result));
     },
     [setFiles, fetch]
   );
@@ -53,6 +57,13 @@ export default function MainPage() {
     setCanAddFolder((prev) => !prev);
   };
 
+  const selectFile = (key: string) => {
+    // setSelectedFiles((prev: SetStateAction<string[]>) =>
+    //   orev. ? prev.splice(prev.indexOf(key, 1)) : prev.push(key)
+    // );
+  };
+  console.log(selectedFiles);
+
   React.useEffect(() => {
     const token = localStorage.getItem("write_token");
     if (token) {
@@ -63,12 +74,13 @@ export default function MainPage() {
   }, [getFiles, router]);
 
   return (
-    <div className="h-auto p-5 cstm-flex-col justify-start ">
+    <div className="cstm-grdbg-blk-1-2 min-h-screen h-auto pt-28 p-5 cstm-flex-col justify-start">
       {canAddNote ? <AddNoteForm getFiles={getFiles} closeForm={handleAddNote} path="0" /> : null}
       {canAddFolder ? (
         <AddFolderForm getFiles={getFiles} closeForm={handleAddFolder} path="0" />
       ) : null}
-      <div className="w-full cstm-flex-col gap-3 t:w-8/12 ">
+
+      <div className="w-full cstm-flex-col gap-3 t:w-7/12 ">
         <div className="cstm-flex-row gap-3 w-full ml-auto t:w-6/12 l-s:w-4/12 l-l:w-3/12">
           <ButtonComp
             label={`+ Note`}
@@ -89,9 +101,9 @@ export default function MainPage() {
         >
           {files.map((file: FileBlockProps) => {
             return file.type === "note" ? (
-              <NoteBlock key={file.fileKey} note={file} />
+              <NoteBlock key={file.fileKey} note={file} selectFile={selectFile} />
             ) : (
-              <FolderBlock key={file.fileKey} folder={file} />
+              <FolderBlock key={file.fileKey} folder={file} selectFile={selectFile} />
             );
           })}
         </div>

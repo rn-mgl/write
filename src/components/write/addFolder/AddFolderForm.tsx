@@ -70,7 +70,6 @@ const AddFolderForm: React.FC<FormProps> = (props) => {
             placeholder="Title"
             onChange={(e) => handleInput(e)}
             value={formData.name}
-            required={true}
             type="text"
             style="w-full bg-gry2"
           />

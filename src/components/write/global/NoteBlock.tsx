@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 
 interface NoteType {
   fileId: number;
@@ -9,28 +10,43 @@ interface NoteType {
   path: number;
   content: string;
   dateCreated: Date;
+  bgColor: string;
 }
 
 interface NoteBlockProps {
   note: NoteType;
+  selectFile: (type: string, key: string) => void;
 }
 
-const NoteBlock: React.FC<NoteBlockProps> = ({ note }) => {
-  const hasTitle = note.name !== "";
-  const hasContent = note.content !== "";
+const NoteBlock: React.FC<NoteBlockProps> = (props) => {
+  const hasTitle = props.note.name !== "";
+  const hasContent = props.note.content !== "";
+  const _borderColor = props.note.bgColor ? props.note.bgColor : "#595959";
   return (
-    <Link
-      href={`/write/n/${note.fileKey}`}
-      className="p-5 inline-block rounded-md border-gry1 border-[1px] w-full h-28 overflow-hidden l-s:w-full
-                hover:shadow-md hover:shadow-gry2"
-    >
-      <p className={`${!hasTitle && "opacity-50"} font-noto font-semibold text-wht mb-2`}>
-        {hasTitle ? note.name : "No Title"}
-      </p>
-      <p className={`${!hasContent && "opacity-50"} font-work font-light text-gry1 w-full`}>
-        {hasContent ? note.content : "No Content"}
-      </p>
-    </Link>
+    <div className="relative group w-full">
+      <BsFillCheckCircleFill
+        className="absolute hidden -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer"
+        onClick={() => props.selectFile("note", props.note.fileKey)}
+      />
+      <Link
+        href={`/write/n/${props.note.fileKey}`}
+        className={`relative p-5 inline-block rounded-md border-gry2 border-[1px] w-full h-28 l-s:w-full 
+               hover:scale-105 transition-all cstm-grdbg-neutral-1-2 
+              hover:shadow-md hover:shadow-gry2`}
+        style={{ borderBottomColor: _borderColor, boxShadow: _borderColor }}
+      >
+        <p className={`${!hasTitle && "opacity-50"} font-noto font-semibold text-wht mb-2`}>
+          {hasTitle ? props.note.name : "No Title"}
+        </p>
+        <p
+          className={`${
+            !hasContent && "opacity-50"
+          } font-work font-light text-gry1 w-full overflow-hidden truncate`}
+        >
+          {hasContent ? props.note.content : "No Content"}
+        </p>
+      </Link>
+    </div>
   );
 };
 

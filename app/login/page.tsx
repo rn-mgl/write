@@ -26,29 +26,30 @@ export default function Login() {
 
   const submitLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    try {
-      const req = await fetch(`${url}/auth/l`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
+    const req = await fetch(`${url}/auth/l`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText);
+        }
+      })
+      .then((res) => {
+        localStorage.setItem("write_name", res?.name);
+        localStorage.setItem("write_verified", res?.isVerified);
+        localStorage.setItem("write_id", res?.userId);
+        localStorage.setItem("write_token", `Bearer ${res?.token}`);
+        localStorage.setItem("write_email", res?.email);
+        router.push("/write");
       });
-
-      const res = await req.json();
-
-      localStorage.setItem("write_name", res?.name);
-      localStorage.setItem("write_verified", res?.isVerified);
-      localStorage.setItem("write_id", res?.userId);
-      localStorage.setItem("write_token", `Bearer ${res?.token}`);
-      localStorage.setItem("write_email", res?.email);
-
-      router.push("/write");
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
-    <div className="cstm-flex-col p-5 gap-2">
+    <div className="cstm-grdbg-blk-1-2 h-screen cstm-flex-col p-5 gap-2">
       <p className="font-noto font-extrabold text-3xl mb-3 cstm-grdtxt-wht-1-2">Log In</p>
       <LoginForm onChange={handleLoginData} onSubmit={submitLogin} value={loginData} />
     </div>

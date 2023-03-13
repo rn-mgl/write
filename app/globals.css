@@ -15,6 +15,10 @@
     @apply bg-gradient-to-b from-blk1 to-blk2;
   }
 
+  .cstm-grdbg-neutral-1-2 {
+    @apply bg-gradient-to-b from-neutral-800 to-neutral-900;
+  }
+
   .cstm-grdbg-wht-1-2 {
     @apply bg-gradient-to-r from-wht to-neutral-400;
   }

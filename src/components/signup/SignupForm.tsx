@@ -20,7 +20,7 @@ const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
     <form
       method="post"
       onSubmit={(e) => props.onSubmit(e)}
-      className="cstm-flex-col gap-2 w-full t:w-8/12 l-s:w-6/12 l-l:w-3/12"
+      className="cstm-flex-col gap-2 w-full t:w-6/12 l-l:w-3/12"
     >
       <div
         className="w-full rounded-md border-[1px] border-opacity-30 border-wht p-2 

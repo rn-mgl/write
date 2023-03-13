@@ -1,11 +1,23 @@
+"use client";
+import React from "react";
 import landing from "../public/writeLanding.png";
 import Image from "next/image";
 import LinkComp from "@/src/components/input/Link";
+import { useRouter } from "next/navigation";
 
 export default function Landing() {
+  const router = useRouter();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("write_token");
+    if (token) {
+      router.push("write");
+    }
+  }, [router]);
+
   return (
     <main
-      className="p-5 cstm-flex-col justify-start gap-5 overflow-hidden text-wht
+      className="cstm-grdbg-blk-1-2 h-screen p-5 pt-10 cstm-flex-col justify-start gap-5 overflow-hidden text-wht
                 t:cstm-flex-row
                 l-s:p-10"
     >
@@ -36,7 +48,7 @@ export default function Landing() {
           />
         </div>
       </div>
-      <div className="w-full h-2/6 cstm-flex-col l-s:w-5/12">
+      <div className="w-full h-2/6 cstm-flex-col m-l:w-10/12 l-s:w-5/12">
         <Image priority src={landing} alt="landing" className="w-full m-l:w-10/12 l-l:w-8/12" />
       </div>
     </main>

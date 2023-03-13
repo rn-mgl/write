@@ -6,18 +6,21 @@ interface InputProps {
   placeholder: string;
   style?: string;
   value: string;
-  label: string;
+  label?: string;
   required?: boolean;
-  type?: "number" | "text" | "date" | "email" | "password";
+  type?: "number" | "text" | "date" | "email" | "password" | "color";
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputComp: React.FC<InputProps> = (props): React.ReactElement => {
   return (
     <div className="w-full">
-      <label className="font-work text-wht text-sm mr-auto" htmlFor={props.name}>
-        {props.label}
-      </label>
+      {props.label ? (
+        <label className="font-work text-wht text-sm mr-auto" htmlFor={props.name}>
+          {props.label}
+        </label>
+      ) : null}
+
       <div className="w-full relative">
         <input
           name={props.name}
