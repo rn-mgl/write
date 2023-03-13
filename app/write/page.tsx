@@ -62,7 +62,6 @@ export default function MainPage() {
     //   orev. ? prev.splice(prev.indexOf(key, 1)) : prev.push(key)
     // );
   };
-  console.log(selectedFiles);
 
   React.useEffect(() => {
     const token = localStorage.getItem("write_token");
