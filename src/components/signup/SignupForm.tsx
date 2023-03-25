@@ -13,6 +13,7 @@ interface FormProps {
   value: InputValue;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  loading: boolean;
 }
 
 const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
@@ -20,7 +21,9 @@ const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
     <form
       method="post"
       onSubmit={(e) => props.onSubmit(e)}
-      className="cstm-flex-col gap-2 w-full t:w-6/12 l-l:w-3/12"
+      className={`${
+        props.loading ? "opacity-50" : "opacity-100"
+      } cstm-flex-col gap-2 w-full t:w-6/12 l-l:w-3/12 transition-all`}
     >
       <div
         className="w-full rounded-md border-[1px] border-opacity-30 border-wht p-2 
@@ -31,6 +34,7 @@ const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
           name="name"
           value={props.value.name}
           onChange={(e) => props.onChange(e)}
+          disabled={props.loading}
           placeholder="Your Name"
           label="Name"
           required={true}
@@ -41,6 +45,7 @@ const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
           name="surname"
           value={props.value.surname}
           onChange={(e) => props.onChange(e)}
+          disabled={props.loading}
           placeholder="Your Surname"
           label="Surname"
           required={true}
@@ -51,6 +56,7 @@ const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
           name="email"
           value={props.value.email}
           onChange={(e) => props.onChange(e)}
+          disabled={props.loading}
           placeholder="Your Email"
           label="Email"
           required={true}
@@ -62,6 +68,7 @@ const SignupForm: React.FC<FormProps> = (props): React.ReactElement => {
           name="password"
           value={props.value.password}
           onChange={(e) => props.onChange(e)}
+          disabled={props.loading}
           placeholder="Your Password"
           label="Password"
           required={true}

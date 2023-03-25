@@ -15,6 +15,7 @@ import Link from "next/link";
 import FolderActions from "@/src/components/write/folder/FolderActions";
 import TextColor from "@/src/components/write/folder/TextColor";
 import DeleteFolder from "@/src/components/write/folder/DeleteFolder";
+import Loading from "@/src/components/global/Loading";
 
 interface FileBlockProps {
   fileId: number;
@@ -57,6 +58,7 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
   const [canDeleteFolder, setCanDeleteFolder] = React.useState(false);
   const [canChangeFillColor, setChangeFillColor] = React.useState(false);
   const [canChangeTextColor, setChangeTextColor] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const { url } = useGlobalContext();
   const { folderKey } = params;
@@ -66,6 +68,7 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
 
   const getFiles = React.useCallback(
     async (token: string, url: string) => {
+      setLoading(true);
       fetch(`${url}/folder/${folderKey}`, {
         method: "GET",
         headers: { "Content-Type": "application/json", Authorization: token },
@@ -80,6 +83,7 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
         .then((result) => {
           setFiles(result.files);
           setFolderData(result.folder);
+          setLoading(false);
         });
     },
     [setFiles, fetch]
@@ -119,6 +123,7 @@ export default function FolderPage({ params }: { params: { folderKey: string } }
       className="cstm-grdbg-blk-1-2 min-h-screen h-auto p-5 pt-28 cstm-flex-col justify-start gap-2 border-2"
       style={{ borderColor: folderData.folderColor }}
     >
+      {loading ? <Loading /> : null}
       {canAddNote ? (
         <AddNoteForm getFiles={getFiles} closeForm={handleAddNote} path={folderKey} />
       ) : null}

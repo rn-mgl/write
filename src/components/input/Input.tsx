@@ -4,6 +4,7 @@ import React from "react";
 interface InputProps {
   name: string;
   placeholder: string;
+  disabled?: boolean;
   style?: string;
   value: string;
   label?: string;
@@ -26,6 +27,7 @@ const InputComp: React.FC<InputProps> = (props): React.ReactElement => {
           name={props.name}
           placeholder={props.placeholder}
           id={props.name}
+          disabled={props.disabled}
           className={`${props.style} p-2 font-work rounded-md w-full
                     transition-all ease-in-out duration-75
                      focus:outline-0 focus:border-blk2`}

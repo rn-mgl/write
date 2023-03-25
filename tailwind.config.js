@@ -29,9 +29,13 @@ module.exports = {
         "75%": { transform: "scaleX(100%)", background: "#62B590" },
         "100%": { transform: "scaleX(-100%)", background: "#DE9C35" },
       },
+      loadingTop: {
+        "0%": { transform: "translateX(-500%)" },
+        "100%": { transform: "translateX(500%)" },
+      },
       sway: {
         "0%": { transform: "translateX(0%)" },
-        "100%": { transform: "translateX(50%)" },
+        "100%": { transform: "translateX(100%)" },
       },
       dropOpacity: {
         "0%": { transform: "translateY(-100%)", opacity: 0, filter: "blur(1px)" },
@@ -40,6 +44,7 @@ module.exports = {
     },
     animation: {
       loading: "loading 5s ease-in-out infinite alternate",
+      loadingTop: "loadingTop 1s ease-in-out infinite alternate",
       sway: "sway 1s ease-in-out infinite alternate",
       dropOpacity: "dropOpacity 500ms ease-in-out 1",
     },

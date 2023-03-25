@@ -11,6 +11,7 @@ interface FormProps {
   value: InputValue;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  loading: boolean;
 }
 
 const LoginForm: React.FC<FormProps> = (props): ReactElement => {
@@ -18,7 +19,9 @@ const LoginForm: React.FC<FormProps> = (props): ReactElement => {
     <form
       method="post"
       onSubmit={(e) => props.onSubmit(e)}
-      className="cstm-flex-col gap-2 w-full t:w-6/12  l-l:w-3/12"
+      className={`${
+        props.loading ? "opacity-50" : "opacity-100"
+      } cstm-flex-col gap-2 w-full t:w-6/12  l-l:w-3/12 transition-all`}
     >
       <div
         className="w-full rounded-md border-[1px] border-opacity-30 border-wht p-2 
@@ -28,6 +31,7 @@ const LoginForm: React.FC<FormProps> = (props): ReactElement => {
           name="candidateEmail"
           placeholder="Email"
           value={props.value.candidateEmail}
+          disabled={props.loading}
           label="Email"
           required={true}
           onChange={(e) => props.onChange(e)}
@@ -39,6 +43,7 @@ const LoginForm: React.FC<FormProps> = (props): ReactElement => {
           placeholder="Password"
           value={props.value.candidatePassword}
           label="Password"
+          disabled={props.loading}
           required={true}
           onChange={(e) => props.onChange(e)}
           style="focus:shadow-md focus:shadow-gry2 focus:rounded-full focus:px-4"

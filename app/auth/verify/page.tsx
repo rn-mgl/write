@@ -6,22 +6,25 @@ import { useGlobalContext } from "context";
 import { BsArrowRight } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
-const verifyUser = async (token: string, url: string) => {
-  try {
-    const req = await fetch(`${url}/auth/v/${token}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const res = await req.json();
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export default function verify() {
+  const [loading, setLoading] = React.useState(false);
   const { url } = useGlobalContext();
   const router = useRouter();
+
+  const verifyUser = async (token: string, url: string) => {
+    setLoading(true);
+    try {
+      const req = await fetch(`${url}/auth/v/${token}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const res = await req.json();
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
 
   React.useEffect(() => {
     const token = localStorage.getItem("write_token");
@@ -41,7 +44,7 @@ export default function verify() {
                     t:text-lg
                     l-s:text-xl"
           >
-            congrats! you are now verified!
+            {loading ? "verifying" : "congrats, you are now verified!"}
           </p>
 
           <Link

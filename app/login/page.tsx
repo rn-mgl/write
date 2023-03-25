@@ -9,6 +9,7 @@ export default function Login() {
     candidateEmail: "",
     candidatePassword: "",
   });
+  const [loading, setLoading] = React.useState(false);
 
   const { url } = useGlobalContext();
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function Login() {
 
   const submitLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
+    setLoading(true);
     const req = await fetch(`${url}/auth/l`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -44,6 +46,7 @@ export default function Login() {
         localStorage.setItem("write_id", res?.userId);
         localStorage.setItem("write_token", `Bearer ${res?.token}`);
         localStorage.setItem("write_email", res?.email);
+        setLoading(false);
         router.push("/write");
       });
   };
@@ -51,7 +54,12 @@ export default function Login() {
   return (
     <div className="cstm-grdbg-blk-1-2 h-screen cstm-flex-col p-5 gap-2">
       <p className="font-noto font-extrabold text-3xl mb-3 cstm-grdtxt-wht-1-2">Log In</p>
-      <LoginForm onChange={handleLoginData} onSubmit={submitLogin} value={loginData} />
+      <LoginForm
+        loading={loading}
+        onChange={handleLoginData}
+        onSubmit={submitLogin}
+        value={loginData}
+      />
     </div>
   );
 }

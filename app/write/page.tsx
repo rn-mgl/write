@@ -8,6 +8,7 @@ import ButtonComp from "@/src/components/input/Button";
 import AddNoteForm from "@/src/components/write/addNote/AddNoteForm";
 import AddFolderForm from "@/src/components/write/addFolder/AddFolderForm";
 import FolderBlock from "@/src/components/write/global/FolderBlock";
+import Loading from "@/src/components/global/Loading";
 
 interface FileBlockProps {
   fileId: number;
@@ -27,12 +28,14 @@ export default function MainPage() {
   const [canAddNote, setCanAddNote] = React.useState(false);
   const [canAddFolder, setCanAddFolder] = React.useState(false);
   const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
+  const [loading, setLoading] = React.useState(false);
 
   const { url } = useGlobalContext();
   const router = useRouter();
 
   const getFiles = React.useCallback(
     async (token: string, url: string) => {
+      setLoading(true);
       fetch(`${url}/all`, {
         method: "GET",
         headers: { "Content-Type": "application/json", Authorization: token },
@@ -44,9 +47,12 @@ export default function MainPage() {
             throw new Error(response.statusText);
           }
         })
-        .then((result) => setFiles(result));
+        .then((result) => {
+          setFiles(result);
+          setLoading(false);
+        });
     },
-    [setFiles, fetch]
+    [setFiles, fetch, setLoading]
   );
 
   const handleAddNote = () => {
@@ -74,6 +80,7 @@ export default function MainPage() {
 
   return (
     <div className="cstm-grdbg-blk-1-2 min-h-screen h-auto pt-28 p-5 cstm-flex-col justify-start">
+      {loading ? <Loading /> : null}
       {canAddNote ? <AddNoteForm getFiles={getFiles} closeForm={handleAddNote} path="0" /> : null}
       {canAddFolder ? (
         <AddFolderForm getFiles={getFiles} closeForm={handleAddFolder} path="0" />

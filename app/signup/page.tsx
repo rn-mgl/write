@@ -11,6 +11,7 @@ export default function SignUp() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = React.useState(false);
 
   const router = useRouter();
   const { url } = useGlobalContext();
@@ -28,7 +29,7 @@ export default function SignUp() {
 
   const submitSignup = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-
+    setLoading(true);
     const req = await fetch(`${url}/auth/s`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,6 +48,7 @@ export default function SignUp() {
         localStorage.setItem("write_token", res?.token);
         localStorage.setItem("write_email", res?.email);
         localStorage.setItem("write_id", res?.userId);
+        setLoading(false);
         router.push("auth/register");
       });
   };
@@ -54,7 +56,12 @@ export default function SignUp() {
   return (
     <div className="cstm-grdbg-blk-1-2 h-screen cstm-flex-col p-5 gap-2">
       <p className="font-noto font-extrabold text-3xl mb-3 cstm-grdtxt-wht-1-2">Sign Up</p>
-      <SignupForm onChange={handleSignupData} onSubmit={submitSignup} value={signupData} />
+      <SignupForm
+        loading={loading}
+        onChange={handleSignupData}
+        onSubmit={submitSignup}
+        value={signupData}
+      />
     </div>
   );
 }

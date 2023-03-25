@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useGlobalContext } from "context";
 import NoteColor from "@/src/components/write/note/NoteColor";
 import TextColor from "@/src/components/write/note/TextColor";
+import Loading from "@/src/components/global/Loading";
 
 interface NoteType {
   noteId: number;
@@ -38,6 +39,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
   const [canDeleteNote, setCanDeleteNote] = React.useState(false);
   const [canChangeFillColor, setChangeFillColor] = React.useState(false);
   const [canChangeTextColor, setChangeTextColor] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const { url } = useGlobalContext();
   const { noteKey } = params;
@@ -78,6 +80,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
   };
 
   const getNoteData = React.useCallback(async (token: string, url: string) => {
+    setLoading(true);
     await fetch(`${url}/note/${noteKey}`, {
       method: "GET",
       headers: { "Content-Type": "application/json", Authorization: token },
@@ -89,10 +92,14 @@ export default function page({ params }: { params: { noteKey: string } }) {
           throw new Error(response.statusText);
         }
       })
-      .then((result) => setNoteData(result));
+      .then((result) => {
+        setNoteData(result);
+        setLoading(false);
+      });
   }, []);
 
   const updateNote = async (token: string) => {
+    setLoading(true);
     await fetch(`${url}/note/${noteKey}?` + new URLSearchParams({ type: "content" }), {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: token },
@@ -102,6 +109,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
       }),
     }).then((response) => {
       if (response.ok) {
+        setLoading(false);
         return response.json();
       } else {
         throw new Error(response.statusText);
@@ -144,10 +152,10 @@ export default function page({ params }: { params: { noteKey: string } }) {
 
   return (
     <div className="cstm-grdbg-blk-1-2 min-h-screen h-auto p-5 text-wht cstm-flex-col">
+      {loading ? <Loading /> : null}
       {canDeleteNote ? (
         <DeleteNote returnPath={returnPath} noteKey={noteKey} toggleDeleteNote={toggleDeleteNote} />
       ) : null}
-
       {canChangeFillColor ? (
         <NoteColor
           noteColor={noteData.noteColor}
