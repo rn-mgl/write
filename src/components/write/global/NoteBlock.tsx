@@ -15,17 +15,20 @@ interface NoteType {
 
 interface NoteBlockProps {
   note: NoteType;
+  selectNote: (key: string) => void;
+  selectedNotes: string[];
 }
 
 const NoteBlock: React.FC<NoteBlockProps> = (props) => {
   const hasTitle = props.note.name !== "";
   const hasContent = props.note.content !== "";
   const _borderColor = props.note.bgColor ? props.note.bgColor : "#595959";
+  const isSelected = props.selectedNotes.includes(props.note.fileKey) ? "flex" : "hidden";
   return (
     <div className="relative group w-full">
       <BsFillCheckCircleFill
-        className="absolute hidden -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer"
-        // onClick={() => props.selectFile("note", props.note.fileKey)}
+        className={`${isSelected} absolute -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer`}
+        onClick={() => props.selectNote(props.note.fileKey)}
       />
       <Link
         href={`/write/n/${props.note.fileKey}`}

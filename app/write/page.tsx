@@ -1,5 +1,5 @@
 "use client";
-import React, { SetStateAction } from "react";
+import React from "react";
 import { useGlobalContext } from "context";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +9,7 @@ import AddNoteForm from "@/src/components/write/addNote/AddNoteForm";
 import AddFolderForm from "@/src/components/write/addFolder/AddFolderForm";
 import FolderBlock from "@/src/components/write/global/FolderBlock";
 import Loading from "@/src/components/global/Loading";
+import SelectActions from "@/src/components/global/SelectActions";
 
 interface FileBlockProps {
   fileId: number;
@@ -27,7 +28,8 @@ export default function MainPage() {
   const [files, setFiles] = React.useState([]);
   const [canAddNote, setCanAddNote] = React.useState(false);
   const [canAddFolder, setCanAddFolder] = React.useState(false);
-  const [selectedFiles, setSelectedFiles] = React.useState<string[]>([]);
+  const [selectedNotes, setSelectedNotes] = React.useState<string[]>([]);
+  const [selectedFolders, setSelectedFolders] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
 
   const { url } = useGlobalContext();
@@ -36,7 +38,7 @@ export default function MainPage() {
   const getFiles = React.useCallback(
     async (token: string, url: string) => {
       setLoading(true);
-      fetch(`${url}/all`, {
+      await fetch(`${url}/all`, {
         method: "GET",
         headers: { "Content-Type": "application/json", Authorization: token },
       })
@@ -55,6 +57,31 @@ export default function MainPage() {
     [setFiles, fetch, setLoading]
   );
 
+  const deleteFiles = async () => {
+    const token = localStorage.getItem("write_token");
+    console.log();
+
+    if (token) {
+      setLoading(true);
+      const data = await fetch(`${url}/all`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: token },
+        body: JSON.stringify({ notes: selectedNotes, folders: selectedFolders }),
+      }).then((request) => {
+        if (request.ok) {
+          request.json().then((response) => {
+            setLoading(false);
+            router.refresh();
+          });
+        } else {
+          throw new Error(request.statusText);
+        }
+      });
+    } else {
+      router.push("login");
+    }
+  };
+
   const handleAddNote = () => {
     setCanAddNote((prev) => !prev);
   };
@@ -63,10 +90,16 @@ export default function MainPage() {
     setCanAddFolder((prev) => !prev);
   };
 
-  const selectFile = (key: string) => {
-    // setSelectedFiles((prev: SetStateAction<string[]>) =>
-    //   orev. ? prev.splice(prev.indexOf(key, 1)) : prev.push(key)
-    // );
+  const selectNote = (fileKey: string) => {
+    setSelectedNotes((prev: string[]): string[] =>
+      prev.indexOf(fileKey) === -1 ? prev.concat([fileKey]) : prev.filter((val) => val !== fileKey)
+    );
+  };
+
+  const selectFolder = (fileKey: string) => {
+    setSelectedFolders((prev: string[]): string[] =>
+      prev.indexOf(fileKey) === -1 ? prev.concat([fileKey]) : prev.filter((val) => val !== fileKey)
+    );
   };
 
   React.useEffect(() => {
@@ -101,15 +134,28 @@ export default function MainPage() {
             onClick={handleAddFolder}
           />
         </div>
+        {selectedNotes.length || selectedFolders.length ? (
+          <SelectActions deleteFiles={deleteFiles} />
+        ) : null}
         <div
           className="w-full cstm-flex-col gap-3 
                     l-s:cstm-flex-row  l-s:grid l-s:grid-cols-3 l-s:items-start"
         >
           {files.map((file: FileBlockProps) => {
             return file.type === "note" ? (
-              <NoteBlock key={file.fileKey} note={file} />
+              <NoteBlock
+                selectNote={selectNote}
+                selectedNotes={selectedNotes}
+                key={file.fileKey}
+                note={file}
+              />
             ) : (
-              <FolderBlock key={file.fileKey} folder={file} />
+              <FolderBlock
+                selectFolder={selectFolder}
+                selectedFolders={selectedFolders}
+                key={file.fileKey}
+                folder={file}
+              />
             );
           })}
         </div>

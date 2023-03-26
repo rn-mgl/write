@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { BsFillCheckCircleFill } from "react-icons/bs";
@@ -15,17 +16,18 @@ interface FolderType {
 
 interface FolderBlockProps {
   folder: FolderType;
-  // selectFile: (type: string, key: string) => void;
+  selectFolder: (key: string) => void;
+  selectedFolders: string[];
 }
 
 const FolderBlock: React.FC<FolderBlockProps> = (props) => {
   const hasName = props.folder.name !== "" && props.folder.name !== undefined;
-
+  const isSelected = props.selectedFolders.includes(props.folder.fileKey) ? "flex" : "hidden";
   return (
     <div className="relative group w-full">
       <BsFillCheckCircleFill
-        // onClick={() => props.selectFile("folder", props.folder.fileKey)}
-        className="absolute hidden -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer"
+        onClick={() => props.selectFolder(props.folder.fileKey)}
+        className={`${isSelected} absolute -top-3 -left-3 z-10 text-wht group-hover:flex cursor-pointer`}
       />
       <Link
         href={`/write/f/${props.folder.fileKey}`}
