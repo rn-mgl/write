@@ -4,6 +4,7 @@ import { RiFileTransferLine } from "react-icons/ri";
 
 interface ActionProps {
   deleteFiles: () => Promise<void>;
+  handleMoveFiles: () => void;
 }
 
 const SelectActions: React.FC<ActionProps> = (props) => {
@@ -11,7 +12,7 @@ const SelectActions: React.FC<ActionProps> = (props) => {
     <div className="cstm-flex-row gap-5 ml-auto text-wht z-20">
       <div
         className="relative p-1 rounded-full hover:bg-gry2 transition-all cursor-pointer group"
-        // onClick={props.toggleChangeFillColor}
+        onClick={props.handleMoveFiles}
       >
         <RiFileTransferLine />
         <p

@@ -10,6 +10,7 @@ import AddFolderForm from "@/src/components/write/addFolder/AddFolderForm";
 import FolderBlock from "@/src/components/write/global/FolderBlock";
 import Loading from "@/src/components/global/Loading";
 import SelectActions from "@/src/components/global/SelectActions";
+import Paths from "@/src/components/global/Paths";
 
 interface FileBlockProps {
   fileId: number;
@@ -28,6 +29,7 @@ export default function MainPage() {
   const [files, setFiles] = React.useState([]);
   const [canAddNote, setCanAddNote] = React.useState(false);
   const [canAddFolder, setCanAddFolder] = React.useState(false);
+  const [canMoveFiles, setCanMoveFiles] = React.useState(false);
   const [selectedNotes, setSelectedNotes] = React.useState<string[]>([]);
   const [selectedFolders, setSelectedFolders] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -35,8 +37,9 @@ export default function MainPage() {
   const { url } = useGlobalContext();
   const router = useRouter();
 
-  const getFiles = React.useCallback(
-    async (token: string, url: string) => {
+  const getFiles = React.useCallback(async () => {
+    const token = localStorage.getItem("write_token");
+    if (token) {
       setLoading(true);
       await fetch(`${url}/all`, {
         method: "GET",
@@ -53,13 +56,13 @@ export default function MainPage() {
           setFiles(result);
           setLoading(false);
         });
-    },
-    [setFiles, fetch, setLoading]
-  );
+    } else {
+      router.push("login");
+    }
+  }, [setFiles, fetch, setLoading]);
 
   const deleteFiles = async () => {
     const token = localStorage.getItem("write_token");
-    console.log();
 
     if (token) {
       setLoading(true);
@@ -71,7 +74,7 @@ export default function MainPage() {
         if (request.ok) {
           request.json().then((response) => {
             setLoading(false);
-            router.refresh();
+            getFiles();
           });
         } else {
           throw new Error(request.statusText);
@@ -90,6 +93,10 @@ export default function MainPage() {
     setCanAddFolder((prev) => !prev);
   };
 
+  const handleMoveFiles = () => {
+    setCanMoveFiles((prev) => !prev);
+  };
+
   const selectNote = (fileKey: string) => {
     setSelectedNotes((prev: string[]): string[] =>
       prev.indexOf(fileKey) === -1 ? prev.concat([fileKey]) : prev.filter((val) => val !== fileKey)
@@ -105,7 +112,7 @@ export default function MainPage() {
   React.useEffect(() => {
     const token = localStorage.getItem("write_token");
     if (token) {
-      getFiles(token, url);
+      getFiles();
     } else {
       router.push("login");
     }
@@ -117,6 +124,14 @@ export default function MainPage() {
       {canAddNote ? <AddNoteForm getFiles={getFiles} closeForm={handleAddNote} path="0" /> : null}
       {canAddFolder ? (
         <AddFolderForm getFiles={getFiles} closeForm={handleAddFolder} path="0" />
+      ) : null}
+      {canMoveFiles ? (
+        <Paths
+          closeForm={handleMoveFiles}
+          getFiles={getFiles}
+          notes={selectedNotes}
+          folders={selectedFolders}
+        />
       ) : null}
 
       <div className="w-full cstm-flex-col gap-3 t:w-7/12 ">
@@ -135,7 +150,7 @@ export default function MainPage() {
           />
         </div>
         {selectedNotes.length || selectedFolders.length ? (
-          <SelectActions deleteFiles={deleteFiles} />
+          <SelectActions handleMoveFiles={handleMoveFiles} deleteFiles={deleteFiles} />
         ) : null}
         <div
           className="w-full cstm-flex-col gap-3 

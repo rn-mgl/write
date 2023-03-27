@@ -11,6 +11,7 @@ import { useGlobalContext } from "context";
 import NoteColor from "@/src/components/write/note/NoteColor";
 import TextColor from "@/src/components/write/note/TextColor";
 import Loading from "@/src/components/global/Loading";
+import Paths from "@/src/components/global/Paths";
 
 interface NoteType {
   noteId: number;
@@ -39,6 +40,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
   const [canDeleteNote, setCanDeleteNote] = React.useState(false);
   const [canChangeFillColor, setChangeFillColor] = React.useState(false);
   const [canChangeTextColor, setChangeTextColor] = React.useState(false);
+  const [canMoveFiles, setCanMoveFiles] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const { url } = useGlobalContext();
@@ -79,24 +81,30 @@ export default function page({ params }: { params: { noteKey: string } }) {
     });
   };
 
-  const getNoteData = React.useCallback(async (token: string, url: string) => {
-    setLoading(true);
-    await fetch(`${url}/note/${noteKey}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json", Authorization: token },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error(response.statusText);
-        }
+  const getNoteData = React.useCallback(async () => {
+    const token = localStorage.getItem("write_token");
+
+    if (token) {
+      setLoading(true);
+      await fetch(`${url}/note/${noteKey}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", Authorization: token },
       })
-      .then((result) => {
-        setNoteData(result);
-        setLoading(false);
-      });
-  }, []);
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error(response.statusText);
+          }
+        })
+        .then((result) => {
+          setNoteData(result);
+          setLoading(false);
+        });
+    } else {
+      router.push("login");
+    }
+  }, [setNoteData, setLoading]);
 
   const updateNote = async (token: string) => {
     setLoading(true);
@@ -117,6 +125,10 @@ export default function page({ params }: { params: { noteKey: string } }) {
     });
   };
 
+  const toggleMoveFiles = () => {
+    setCanMoveFiles((prev) => !prev);
+  };
+
   const toggleDeleteNote = () => {
     setCanDeleteNote((prev) => !prev);
   };
@@ -132,7 +144,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
   React.useEffect(() => {
     const token = localStorage.getItem("write_token");
     if (token) {
-      getNoteData(token, url);
+      getNoteData();
     } else {
       router.push("login");
     }
@@ -171,6 +183,15 @@ export default function page({ params }: { params: { noteKey: string } }) {
           noteKey={noteKey}
           toggleChangeTextColor={toggleChangeTextColor}
           getNoteData={getNoteData}
+        />
+      ) : null}
+
+      {canMoveFiles ? (
+        <Paths
+          closeForm={toggleMoveFiles}
+          getFiles={getNoteData}
+          notes={[noteData.noteKey]}
+          folders={[]}
         />
       ) : null}
 
@@ -219,6 +240,7 @@ export default function page({ params }: { params: { noteKey: string } }) {
           toggleChangeFillColor={toggleChangeFillColor}
           toggleDeleteNote={toggleDeleteNote}
           toggleChangeTextColor={toggleChangeTextColor}
+          toggleMoveFiles={toggleMoveFiles}
         />
       </div>
     </div>
